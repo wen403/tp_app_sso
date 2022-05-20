@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link href="/static/css/style.css" rel="stylesheet">
+    <!--    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">-->
+    <!--    <link rel='stylesheet prefetch' href='https://fonts.go/ogleapis.com/icon?family=Material+Icons'>-->
+    <link href="/static/lib/pjax/nprogress.min.css" rel="stylesheet">
+    <script src="/static/lib/jquery.min.js"></script>
+    <script src="/static/lib/layui/layui.js"></script>
+    <script src="/static/lib/notify/notify.js"></script>
+    <script src="/static/lib/pjax/nprogress.min.js"></script>
+</head>
+<style>
+    /* latin-ext */
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: url(/static/woff2/S6uyw4BMUTPHjxAwXjeu.woff2) format('woff2');
+        unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    }
+
+    /* latin */
+    @font-face {
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        src: url(/static/woff2/S6uyw4BMUTPHjx4wXg.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    /* fallback */
+    @font-face {
+        font-family: 'Material Icons';
+        font-style: normal;
+        font-weight: 400;
+        src: url(/static/woff2/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('woff2');
+    }
+
+    .material-icons {
+        font-family: 'Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+    }
+</style>
+<body>
+
+<div class="cotn_principal">
+    <div class="cont_centrar">
+        <div class="cont_login">
+            <div class="cont_info_log_sign_up">
+                <div class="col_md_login">
+                    <div class="cont_ba_opcitiy">
+                        <h2>登录</h2>
+                        <p>登录后将授权所有子系统！</p>
+                        <button class="btn_login" onclick="cambiar_login()">登录</button>
+                    </div>
+                </div>
+                <div class="col_md_sign_up">
+                    <div class="cont_ba_opcitiy">
+                        <h2>注册</h2>
+                        <p>一个账号所有子系统通用！</p>
+                        <button class="btn_sign_up" onclick="cambiar_sign_up()">注册</button>
+                    </div>
+                </div>
+            </div>
+            <div class="cont_back_info">
+                <div class="cont_img_back_grey"><img alt="" src="/static/img/po.jpg"/></div>
+            </div>
+            <div class="cont_forms">
+                <div class="cont_img_back_"><img alt="" src="/static/img/po.jpg"/></div>
+                <div class="cont_form_login"><a href="javascript:void(0);" onclick="ocultar_login_sign_up()"><i
+                        class="material-icons">&#xE5C4;</i></a>
+                    <h2>登录</h2>
+                    <input name="username" placeholder="账号" type="text"/>
+                    <button class="btn_login" onclick="cambiar_login(1)">登录</button>
+                </div>
+                <div class="cont_form_sign_up"><a href="javascript:void(0);" onclick="ocultar_login_sign_up()"><i
+                        class="material-icons">&#xE5C4;</i></a>
+                    <h2>SIGN UP</h2>
+                    <input placeholder="邮箱" type="text"/>
+                    <input placeholder="用户" type="text"/>
+                    <input placeholder="密码" type="password"/>
+                    <input placeholder="确认密码" type="password"/>
+                    <button class="btn_sign_up" onclick="cambiar_sign_up()">注册</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+    $(function () {
+        // pjax 进度条
+        $(document).on('pjax:start', function () {
+            NProgress.start();
+        }).on('pjax:end', function () {
+            NProgress.done();
+        });
+        // ajax 进度条
+        $(document).ajaxStart(function () {
+            NProgress.start();
+        }).ajaxStop(function () {
+            NProgress.done();
+        })
+    });
+
+    function cambiar_login(op) {
+        document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_login";
+        document.querySelector('.cont_form_login').style.display = "block";
+        document.querySelector('.cont_form_sign_up').style.opacity = "0";
+
+        setTimeout(function () {
+            document.querySelector('.cont_form_login').style.opacity = "1";
+        }, 400);
+
+        setTimeout(function () {
+            document.querySelector('.cont_form_sign_up').style.display = "none";
+        }, 200);
+
+        if (op === 1) {
+            notify.loading("登录中");
+            $.ajax({
+                url: "{:config('sso.login_url')}",
+                type: "post",
+                data: {
+                    username: $("input[name='username']").val(),
+                },
+                dataType: "json",
+                success: function (res) {
+                    notify.destroyAll();
+                    if (res.code === 200) {
+                        window.location.href = res.url;
+                    } else {
+                        notify.error(res.msg);
+                    }
+                }
+            })
+        }
+    }
+
+    function cambiar_sign_up(at) {
+        document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_sign_up";
+        document.querySelector('.cont_form_sign_up').style.display = "block";
+        document.querySelector('.cont_form_login').style.opacity = "0";
+
+        setTimeout(function () {
+            document.querySelector('.cont_form_sign_up').style.opacity = "1";
+        }, 100);
+
+        setTimeout(function () {
+            document.querySelector('.cont_form_login').style.display = "none";
+        }, 400);
+    }
+
+    function ocultar_login_sign_up() {
+
+        document.querySelector('.cont_forms').className = "cont_forms";
+        document.querySelector('.cont_form_sign_up').style.opacity = "0";
+        document.querySelector('.cont_form_login').style.opacity = "0";
+
+        setTimeout(function () {
+            document.querySelector('.cont_form_sign_up').style.display = "none";
+            document.querySelector('.cont_form_login').style.display = "none";
+        }, 500);
+    }
+</script>
+
+</html>
