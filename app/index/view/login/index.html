@@ -89,12 +89,11 @@
                 </div>
                 <div class="cont_form_sign_up"><a href="javascript:void(0);" onclick="ocultar_login_sign_up()"><i
                         class="material-icons">&#xE5C4;</i></a>
-                    <h2>SIGN UP</h2>
-                    <input placeholder="邮箱" type="text"/>
-                    <input placeholder="用户" type="text"/>
-                    <input placeholder="密码" type="password"/>
-                    <input placeholder="确认密码" type="password"/>
-                    <button class="btn_sign_up" onclick="cambiar_sign_up()">注册</button>
+                    <h2>注册</h2>
+                    <input name="username2" placeholder="用户" type="text"/>
+                    <input name="password" placeholder="密码" type="password"/>
+                    <input name="re_password" placeholder="确认密码" type="password"/>
+                    <button class="btn_sign_up" onclick="cambiar_sign_up(1)">注册</button>
                 </div>
             </div>
         </div>
@@ -143,7 +142,7 @@
                 success: function (res) {
                     notify.destroyAll();
                     if (res.code === 200) {
-                        window.location.href = res.url;
+                        window.location.href = '/';
                     } else {
                         notify.error(res.msg);
                     }
@@ -164,6 +163,29 @@
         setTimeout(function () {
             document.querySelector('.cont_form_login').style.display = "none";
         }, 400);
+
+        if (at === 1) {
+            notify.loading("注册中");
+            $.ajax({
+                url: "{:config('sso.register_url')}",
+                type: "post",
+                data: {
+                    username: $("input[name='username2']").val(),
+                    password: $("input[name='password']").val(),
+                    re_password: $("input[name='re_password']").val(),
+                },
+                dataType: "json",
+                success: function (res) {
+                    notify.destroyAll();
+                    if (res.code === 200) {
+                        notify.success(res.msg);
+                        window.location.href = '';
+                    } else {
+                        notify.error(res.msg);
+                    }
+                }
+            })
+        }
     }
 
     function ocultar_login_sign_up() {

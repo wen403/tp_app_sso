@@ -32,7 +32,8 @@ class Auth
             }
         }
 
-        if ($_SERVER['REQUEST_URI'] === '/index/login/index') {
+        $cont = explode('/', $_SERVER['REQUEST_URI']);
+        if (isset($cont[2]) && $cont[2] === 'login') {
             return $next($request);
         }
 

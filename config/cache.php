@@ -10,7 +10,7 @@ return [
 
     // 缓存连接方式配置
     'stores'  => [
-        'file' => [
+        'file'  => [
             // 驱动方式
             'type'       => 'File',
             // 缓存保存目录
@@ -25,5 +25,17 @@ return [
             'serialize'  => [],
         ],
         // 更多的缓存连接
+        'redis' => [
+            // 驱动方式
+            'type'     => 'redis',
+            // 服务器地址
+            'host'     => env('redis.host', '127.0.0.1'),
+            // 缓存有效期 0表示永久缓存
+            'expire'   => 21600,
+            // 端口
+            'port'     => env('redis.port', 6379),
+            //密码
+            'password' => env('redis.password', '123456')
+        ],
     ],
 ];

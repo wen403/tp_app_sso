@@ -5,6 +5,7 @@ namespace app\index\controller;
 
 use app\BaseController;
 use think\exception\HttpResponseException;
+use think\facade\Cache;
 
 class Login extends BaseController
 {
@@ -28,14 +29,61 @@ class Login extends BaseController
                 return json(['code' => 400, 'msg' => '用户名不能为空']);
             }
 
-            $token = \app\common\Login::encodeJWT($data);
-
+            // 验证数据
+            $id = \app\common\Login::validate($data);
+            if ($id === false) {
+                return json(['code' => 400, 'msg' => '用户不存在']);
+            }
             // 记录用户信息
-            session('user', ['id' => time() + rand(), 'name' => $data['username'], 'token' => $token]);
+            $data['id'] = $id;
+            $token      = \app\common\Login::encodeJWT($data);
+            $mark       = ['id' => $id, 'username' => $data['username'], 'token' => $token];
+            session('user', $mark);
 
-            return json(['code' => 200, 'msg' => '登录成功', 'url' => '/']);
+            // 上线
+            \app\common\Login::setOnline($id, $data['username'], $token);
+
+            return json(['code' => 200, 'msg' => '登录成功']);
         }
 
         return view();
+    }
+
+    public function register()
+    {
+        $param = request()->only([
+            'username'    => '',
+            'password'    => '',
+            're_password' => ''
+        ], 'post', 'trim');
+
+        if (empty($param['username'])) {
+            return json(['code' => 400, 'msg' => '用户不能为空']);
+        }
+
+        if (empty($param['password'])) {
+            return json(['code' => 400, 'msg' => '密码不能为空']);
+        }
+
+        if ($param['password'] <> $param['re_password']) {
+            return json(['code' => 400, 'msg' => '密码不一致']);
+        }
+
+        $user = Cache::store('redis')->get('user');
+
+        if (empty($user)) {
+            Cache::store('redis')->set('user', [
+                ['id' => 1, 'name' => $param['username'], 'passowrd' => $param['password']]
+            ]);
+        } else {
+            $username = array_column($user, 'name');
+            if (in_array($param['username'], $username)) {
+                return json(['code' => 200, 'msg' => '你是不是注册过']);
+            }
+            $user[] = ['id' => count($user) + 1, 'name' => $param['username'], 'password' => $param['password']];
+            Cache::store('redis')->set('user', $user);
+        }
+
+        return json(['code' => 200, 'msg' => '注册成功']);
     }
 }

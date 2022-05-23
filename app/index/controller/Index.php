@@ -8,7 +8,15 @@ class Index extends BaseController
 {
     public function index()
     {
-        return 'sso主页面用户' . session('user.name');
+        return view();
     }
 
+    public function logout()
+    {
+        \app\common\Login::setOffline(session('user.id'));
+
+        session(null);
+
+        return json(['code' => 200, 'msg' => '登出成功！']);
+    }
 }
