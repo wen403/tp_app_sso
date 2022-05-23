@@ -1,17 +1,14 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>登录</title>
-    <link href="/static/css/style.css" rel="stylesheet">
-    <!--    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">-->
-    <!--    <link rel='stylesheet prefetch' href='https://fonts.go/ogleapis.com/icon?family=Material+Icons'>-->
-    <link href="/static/lib/pjax/nprogress.min.css" rel="stylesheet">
-    <script src="/static/lib/jquery.min.js"></script>
-    <script src="/static/lib/layui/layui.js"></script>
-    <script src="/static/lib/notify/notify.js"></script>
-    <script src="/static/lib/pjax/nprogress.min.js"></script>
-</head>
+{extend name="public/index" /}
+
+{block name="title"}登录{/block}
+
+{block name="link"}
+<link href="/static/css/style.css" rel="stylesheet">
+<!--    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">-->
+<!--    <link rel='stylesheet prefetch' href='https://fonts.go/ogleapis.com/icon?family=Material+Icons'>-->
+{/block}
+
+{block name="style"}
 <style>
     /* latin-ext */
     @font-face {
@@ -55,8 +52,10 @@
         -webkit-font-smoothing: antialiased;
     }
 </style>
-<body>
+{/block}
 
+{block name="body"}
+<body>
 <div class="cotn_principal">
     <div class="cont_centrar">
         <div class="cont_login">
@@ -99,24 +98,11 @@
         </div>
     </div>
 </div>
-
 </body>
-<script>
-    $(function () {
-        // pjax 进度条
-        $(document).on('pjax:start', function () {
-            NProgress.start();
-        }).on('pjax:end', function () {
-            NProgress.done();
-        });
-        // ajax 进度条
-        $(document).ajaxStart(function () {
-            NProgress.start();
-        }).ajaxStop(function () {
-            NProgress.done();
-        })
-    });
+{/block}
 
+{block name="script"}
+<script>
     function cambiar_login(op) {
         document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_login";
         document.querySelector('.cont_form_login').style.display = "block";
@@ -200,5 +186,4 @@
         }, 500);
     }
 </script>
-
-</html>
+{/block}

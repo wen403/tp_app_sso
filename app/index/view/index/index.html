@@ -1,14 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>首页</title>
-    <link href="/static/lib/pjax/nprogress.min.css" rel="stylesheet">
-    <script src="/static/lib/jquery.min.js"></script>
-    <script src="/static/lib/layui/layui.js"></script>
-    <script src="/static/lib/notify/notify.js"></script>
-    <script src="/static/lib/pjax/nprogress.min.js"></script>
-</head>
+{extend name="public/index" /}
+
+{block name="title"}首页{/block}
+
+{block name="body"}
 <body>
 <h3>Id：{:session('user.id')}</h3>
 <h3>地址：{:request()->domain()}</h3>
@@ -16,6 +10,9 @@
 <h3>token：{:session('user.token')}</h3>
 <a class="logout" href="javascript:void(0);">退出登录</a>
 </body>
+{/block}
+
+{block name="script"}
 <script>
     $(function () {
         $(".logout").on("click", function () {
@@ -36,4 +33,4 @@
         });
     });
 </script>
-</html>
+{/block}
