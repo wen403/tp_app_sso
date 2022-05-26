@@ -15,22 +15,7 @@
 {block name="script"}
 <script>
     $(function () {
-        $(".logout").on("click", function () {
-            notify.loading("登出中");
-            $.ajax({
-                url: "{:url('logout')}",
-                type: "post",
-                dataType: "json",
-                success: function (res) {
-                    notify.destroyAll();
-                    if (res.code === 200) {
-                        window.location.href = "/";
-                    } else {
-                        notify.error(res.msg);
-                    }
-                }
-            });
-        });
+        $(".logout").on("click", logout);
     });
 </script>
 {/block}

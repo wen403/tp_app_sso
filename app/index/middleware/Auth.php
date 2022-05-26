@@ -21,9 +21,9 @@ class Auth
             // jwt 解码
             try {
                 $authInfo = Login::decodeJWT(input('token'));
-                $user     = $authInfo['username'];
                 session('user', [
-                    'username' => $user,
+                    'id'       => $authInfo['id'],
+                    'username' => $authInfo['username'],
                     'token'    => input('token'),
                 ]);
                 return redirect('/');

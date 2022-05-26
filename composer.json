@@ -27,7 +27,10 @@
     "hprose/hprose": "^2.0",
     "topthink/think-multi-app": "^1.0",
     "ext-json": "*",
-    "topthink/think-view": "^1.0"
+    "topthink/think-view": "^1.0",
+    "topthink/think-worker": "^3.0",
+    "workerman/gatewayclient": "^3.0",
+    "ext-redis": "*"
   },
   "require-dev": {
     "symfony/var-dumper": "^4.2",

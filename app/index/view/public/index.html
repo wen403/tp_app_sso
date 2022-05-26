@@ -28,7 +28,70 @@
         }).ajaxStop(function () {
             NProgress.done();
         })
+
+        if ("{:session('?user')}") {
+            // 初始化gateway
+            gatewayWorkerInit();
+        }
+
     });
+
+    function gatewayWorkerInit() {
+        const ws = new WebSocket("ws://127.0.0.1:2348")
+
+        ws.onopen = function () {
+            console.log('连接中...')
+            // 登陆
+            let data = {
+                "type": "login",
+                "uid": "{:session('user.id')}",
+            }
+            ws.send(JSON.stringify(data))
+
+            setTimeout(function () {
+                let data = {
+                    "type": "ping"
+                }
+                ws.send(JSON.stringify(data))
+            }, 20000)
+        }
+
+        ws.onmessage = function (e) {
+            let data = JSON.parse(e.data)
+            switch (data.type) {
+                case "ping":
+                    ws.send(JSON.stringify(data))
+                    break;
+                case "signOut":
+                    notify.warning("您已在其他地方登录！", function () {
+                        logout();
+                    })
+            }
+            console.log(JSON.parse(e.data))
+        }
+
+        ws.onclose = function () {
+            console.log('连接关闭...')
+        }
+
+    }
+
+    function logout() {
+        notify.loading("登出中");
+        $.ajax({
+            url: "{:url('login/logout')}",
+            type: "post",
+            dataType: "json",
+            success: function (res) {
+                notify.destroyAll();
+                if (res.code === 200) {
+                    window.location.href = "/";
+                } else {
+                    notify.error(res.msg);
+                }
+            }
+        });
+    }
 </script>
 {block name="script"}{/block}
 </html>

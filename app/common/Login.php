@@ -4,6 +4,7 @@ namespace app\common;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use GatewayClient\Gateway;
 use think\facade\Cache;
 
 class Login
@@ -47,6 +48,8 @@ class Login
                 Cache::store('redis')->set('online_user', $online_user);
             }
         }
+        // 踢掉之前的
+        Gateway::sendToUid($id, json_encode(['type' => 'signOut']));
     }
 
     /**
@@ -71,7 +74,10 @@ class Login
      */
     public static function validate($data)
     {
-        $user     = Cache::store('redis')->get('user');
+        $user = Cache::store('redis')->get('user');
+        if (empty($user)) {
+            return false;
+        }
         $arr_user = array_column($user, 'name', 'id');
         $id       = array_search($data['username'], $arr_user);
         if ($id === false) {

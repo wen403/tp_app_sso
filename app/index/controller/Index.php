@@ -11,12 +11,5 @@ class Index extends BaseController
         return view();
     }
 
-    public function logout()
-    {
-        \app\common\Login::setOffline(session('user.id'));
 
-        session(null);
-
-        return json(['code' => 200, 'msg' => '登出成功！']);
-    }
 }
